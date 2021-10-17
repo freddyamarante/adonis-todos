@@ -2,15 +2,15 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Todo from 'App/Models/Todo'
 
 export default class TodosController {
-  public async index () {
-    return Todo.query().preload('contact')
+  public async index (userId) {
+    return Todo.query().where('user_id', userId).preload('contact')
   }
 
-  public async findByTitle(title: string) {
-    return Todo.query().where('title', 'like', `%${title}%`).preload('contact')
+  public async findByTitle(userId: number, title: string) {
+    return Todo.query().where('title', 'like', `%${title}%`).where('user_id', userId).preload('contact')
   }
 
-  public async create (data: Record<string, any>) { 
+  public async create (userId: number, data: Record<string, any>) { 
     const contactId = data.contactId
     const todo = new Todo()
 
@@ -26,6 +26,10 @@ export default class TodosController {
     todo.completed = data.completed ?? ''
 
     await todo.save()
+
+    // TODO LINK USER TO TODOS
+
+    return userId
 
     return todo
 

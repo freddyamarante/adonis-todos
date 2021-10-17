@@ -1,5 +1,4 @@
 import Contact from "App/Models/Contact"
-import Todo from "App/Models/Todo"
 
 export default class ContactsController {
   public async index() {
@@ -10,8 +9,8 @@ export default class ContactsController {
     return Contact.findBy('name', name)
   }
 
-  public async create(client: Record<string, any>) {
-    return Contact.create(client)
+  public async create(contact: Record<string, any>) {
+    return Contact.create(contact)
   }
 
   public async destroy (id: number) {

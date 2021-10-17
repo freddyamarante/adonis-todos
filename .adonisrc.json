@@ -16,12 +16,14 @@
   "preloads": [
     "./start/routes/todos",
     "./start/routes/contacts",
+    "./start/routes/users",
     "./start/kernel"
   ],
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "@adonisjs/lucid"
+    "@adonisjs/lucid",
+    "@adonisjs/auth"
   ],
   "aceProviders": [
     "@adonisjs/repl"
