@@ -28,7 +28,7 @@ export default class ContactValidator {
       rules.minLength(3),
       rules.unique({ table: 'contacts', column: 'name' }),
     ]),
-    email: schema.string({}, [rules.email()]),
+    email: schema.string.optional({}, [rules.email()]),
   })
 
   /**

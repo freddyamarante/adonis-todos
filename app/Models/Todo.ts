@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Contact from './Contact'
+import { Exception } from '@poppinss/utils'
 
 export default class Todo extends BaseModel {
   @column({ isPrimary: true })
@@ -13,7 +14,7 @@ export default class Todo extends BaseModel {
   public description: string
 
   @column()
-  public contact_id: string
+  public contactId: string
 
   @column()
   public location: string
@@ -32,4 +33,13 @@ export default class Todo extends BaseModel {
 
   @belongsTo(() => Contact)
   public contact: BelongsTo<typeof Contact>
+
+  public async associateContact(contactId) {
+    try {
+      const contact = await Contact.findByOrFail('id', contactId)
+      return await this.related('contact').associate(contact)
+    } catch(exception: any) {
+      throw new Exception('El contacto no existe')
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 import TodosController from 'App/Controllers/Http/TodosController'
 import TodoValidator from 'App/Validators/TodoValidator'
+
 const baseRoute = 'todos'
 
 Route.get(baseRoute, ({ request }) => {

@@ -1,6 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 import ContactsController from 'App/Controllers/Http/ContactsController'
 import ContactValidator from 'App/Validators/ContactValidator'
+
 const baseRoute = 'contacts';
 
 Route.get(baseRoute, ({ request }) => {
@@ -20,10 +21,17 @@ Route.get(baseRoute, ({ request }) => {
     return new ContactsController().create(clientData)
   })
 
-  /*Route.delete('clients/:id', async ({ params }) => {
-    let clientId = params.id
+  Route.delete(`${baseRoute}/:id`, async ({ params }) => {
+    let contactId = params.id
 
-    return new ContactsController().destroy(clientId)
-  }) */
+    return new ContactsController().destroy(contactId)
+  })
+
+  Route.put(baseRoute, async ({ request }) => {
+    await request.validate(ContactValidator)
+    let contactData = request.body()
+  
+    return new ContactsController().update(contactData)
+})
   
   
