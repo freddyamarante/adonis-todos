@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import Todo from './Todo'
 
-export default class Client extends BaseModel {
+export default class Contact extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -9,7 +10,7 @@ export default class Client extends BaseModel {
   public name: string
 
   @column()
-  public lastName: string
+  public lastname: string
 
   @column()
   public phone: string
@@ -22,4 +23,7 @@ export default class Client extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasMany(() => Todo)
+  public todos: HasMany<typeof Todo>
 }

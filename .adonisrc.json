@@ -15,7 +15,7 @@
   },
   "preloads": [
     "./start/routes/todos",
-    "./start/routes/clients",
+    "./start/routes/contacts",
     "./start/kernel"
   ],
   "providers": [

@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Contact from './Contact'
 
 export default class Todo extends BaseModel {
   @column({ isPrimary: true })
@@ -12,7 +13,7 @@ export default class Todo extends BaseModel {
   public description: string
 
   @column()
-  public contact: string
+  public contact_id: string
 
   @column()
   public location: string
@@ -28,4 +29,7 @@ export default class Todo extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => Contact)
+  public contact: BelongsTo<typeof Contact>
 }

@@ -25,7 +25,7 @@ export default class TodoValidator {
 	 *    ```
 	 */
   public schema = schema.create({
-	  completed: schema.boolean()
+	  completed: schema.boolean.optional()
   })
 
 	/**
