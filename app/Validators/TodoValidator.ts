@@ -1,4 +1,4 @@
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class TodoValidator {
@@ -25,7 +25,7 @@ export default class TodoValidator {
 	 *    ```
 	 */
   public schema = schema.create({
-	  completed: schema.boolean()
+	  completed: schema.boolean.optional(),
   })
 
 	/**
