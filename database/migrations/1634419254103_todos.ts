@@ -8,6 +8,7 @@ export default class Todos extends BaseSchema {
       table.increments('id')
       table.text('title')
       table.text('description')
+      table.integer('user_id').unsigned().references('user.id').onDelete('CASCADE')
       table.integer('contact_id').unsigned().references('contacts.id').onDelete('CASCADE')
       table.text('location')
       table.date('date')

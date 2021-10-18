@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Contact from './Contact'
 import { Exception } from '@poppinss/utils'
+import User from './User'
 
 export default class Todo extends BaseModel {
   @column({ isPrimary: true })
@@ -34,6 +35,9 @@ export default class Todo extends BaseModel {
   @belongsTo(() => Contact)
   public contact: BelongsTo<typeof Contact>
 
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
+
   public async associateContact(contactId) {
     try {
       const contact = await Contact.findByOrFail('id', contactId)
@@ -43,3 +47,5 @@ export default class Todo extends BaseModel {
     }
   }
 }
+
+//

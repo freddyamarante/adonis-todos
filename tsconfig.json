@@ -8,6 +8,8 @@
     "build"
   ],
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowJs": true,
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,
