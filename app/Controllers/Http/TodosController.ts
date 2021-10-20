@@ -3,7 +3,7 @@ import Todo from 'App/Models/Todo'
 
 export default class TodosController {
   public async index (userId) {
-    return Todo.query().where('user_id', userId).preload('contact')
+    return Todo.query().where('user_id', userId).preload('user').preload('contact')
   }
 
   public async findByTitle(userId: number, title: string) {
@@ -19,6 +19,11 @@ export default class TodosController {
       await todo.load('contact')
     }
 
+    if (!!userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
+    }
+
     todo.title = data.title ?? ''
     todo.description = data.description ?? ''
     todo.location = data.location ?? ''
@@ -26,11 +31,6 @@ export default class TodosController {
     todo.completed = data.completed ?? ''
 
     await todo.save()
-
-    // TODO LINK USER TO TODOS
-
-    return userId
-
     return todo
 
   }
@@ -38,7 +38,7 @@ export default class TodosController {
   public async show ({}: HttpContextContract) {
   }
 
-  public async update (data: Record<string, any>) {
+  public async update (userId: number, data: Record<string, any>) {
     const todo = await Todo.findByOrFail('id', data.id)
 
     if (data.contactId !== null) {
@@ -51,16 +51,25 @@ export default class TodosController {
       delete data.contactId
     }
 
+    if (!!userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
+    }
+
     await todo.merge(data).save()
     await todo.load('contact')
     return todo
   }
 
-  public async destroy (id: number) {
+  public async destroy (userId: number, id: number) {
     const todo = await Todo.findByOrFail('id', id)
-    return await todo.delete()
-  }
 
-  
+    if (userId === todo.userId) {
+      return await todo.delete()
+    } else {
+      return 'Not allowed'
+    }
+  }
 }
+
 

@@ -26,10 +26,8 @@ Route.post(baseRoute, async ({ auth, request }) => {
 Route.delete(`${baseRoute}/:id`, async ({ auth, params }) => {
     await auth.use('api').authenticate()
     let todoId = params.id
-    
-    // TODO: VERIFY IF TODO BELONGS TO A USER
 
-    return new TodosController().destroy(todoId)
+    return new TodosController().destroy(auth.user.id, todoId)
 })
   
 Route.put(baseRoute, async ({ auth, request }) => {
@@ -37,7 +35,5 @@ Route.put(baseRoute, async ({ auth, request }) => {
     await request.validate(TodoValidator)
     let todoData = request.body()
 
-    // TODO: VERIFY IF TODO BELONGS TO A USER
-  
-    return new TodosController().update(todoData)
+    return new TodosController().update(auth.user.id, todoData)
 })
