@@ -15,6 +15,9 @@ export default class Todo extends BaseModel {
   public description: string
 
   @column()
+  public userId: number
+
+  @column()
   public contactId: string
 
   @column()
@@ -46,6 +49,12 @@ export default class Todo extends BaseModel {
       throw new Exception('El contacto no existe')
     }
   }
+
+  public async associateUser(userId) {
+    try {
+      const user = await User.findByOrFail('id', userId)
+      return await this.related('user').associate(user)
+    } catch(exception: any) {
+      throw new Exception('El usuario no existe')
 }
 
-//
