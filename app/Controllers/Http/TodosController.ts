@@ -39,6 +39,11 @@ export default class TodosController {
   public async update(userId: number, data: Record<string, any>) {
     const todo = await Todo.findByOrFail('id', data.id)
 
+    if (!!userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
+    }
+
     if (data.contactId !== null) {
       await todo.associateContact(data.contactId)
       delete data.contactId
