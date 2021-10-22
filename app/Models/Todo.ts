@@ -56,5 +56,6 @@ export default class Todo extends BaseModel {
       return await this.related('user').associate(user)
     } catch(exception: any) {
       throw new Exception('El usuario no existe')
+    }
+  }
 }
-

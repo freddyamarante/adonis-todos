@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Contact from 'App/Models/Contact'
 import Todo from 'App/Models/Todo'
 
 export default class TodosController {

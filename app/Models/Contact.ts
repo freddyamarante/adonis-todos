@@ -34,7 +34,7 @@ export default class Contact extends BaseModel {
   public todos: HasMany<typeof Todo>
 
   @belongsTo(() => User)
-  public users: BelongsTo<typeof User>
+  public user: BelongsTo<typeof User>
 
   public async associateUser(userId) {
     try {
