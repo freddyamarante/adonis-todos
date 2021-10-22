@@ -44,8 +44,8 @@ export default class Todo extends BaseModel {
   public async associateContact(contactId) {
     try {
       const contact = await Contact.findByOrFail('id', contactId)
-      return await this.related('contact').associate(contact)
-    } catch(exception: any) {
+      await this.related('contact').associate(contact)
+    } catch (exception: any) {
       throw new Exception('El contacto no existe')
     }
   }
@@ -54,7 +54,7 @@ export default class Todo extends BaseModel {
     try {
       const user = await User.findByOrFail('id', userId)
       return await this.related('user').associate(user)
-    } catch(exception: any) {
+    } catch (exception: any) {
       throw new Exception('El usuario no existe')
     }
   }
