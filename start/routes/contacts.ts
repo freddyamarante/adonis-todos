@@ -4,30 +4,34 @@ import ContactValidator from 'App/Validators/ContactValidator'
 
 const baseRoute = 'contacts';
 
-Route.get(baseRoute, ({ request }) => {
+Route.get(baseRoute, async ({ auth, request }) => {
+    await auth.use('api').authenticate()
     let name = request.input('name')
   
     if (name) {
-      return new ContactsController().findByName(name)
+      return new ContactsController().findByName(auth.user.id, name)
     }
   
-    return new ContactsController().index()
+    return new ContactsController().index(auth.user.id)
   })
   
-  Route.post(baseRoute, async ({ request }) => {
+  Route.post(baseRoute, async ({ auth, request }) => {
+    await auth.use('api').authenticate()
     await request.validate(ContactValidator)
   
-    let clientData = request.body()
-    return new ContactsController().create(clientData)
+    let contactData = request.body()
+    return new ContactsController().create(auth.user.id, contactData)
   })
 
-  Route.delete(`${baseRoute}/:id`, async ({ params }) => {
+  Route.delete(`${baseRoute}/:id`, async ({ auth, params }) => {
+    await auth.use('api').authenticate()
     let contactId = params.id
 
-    return new ContactsController().destroy(contactId)
+    return new ContactsController().destroy(auth.user.id, contactId)
   })
 
-  Route.put(baseRoute, async ({ request }) => {
+  Route.put(baseRoute, async ({ auth, request }) => {
+    await auth.use('api').authenticate()
     await request.validate(ContactValidator)
     let contactData = request.body()
   

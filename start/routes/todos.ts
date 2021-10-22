@@ -22,6 +22,7 @@ Route.post(baseRoute, async ({ auth, request }) => {
     let todoData = request.body()
     return new TodosController().create(auth.user.id, todoData)
 })
+
   
 Route.delete(`${baseRoute}/:id`, async ({ auth, params }) => {
     await auth.use('api').authenticate()

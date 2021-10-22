@@ -14,6 +14,8 @@ export default class TodosController {
     const contactId = data.contactId
     const todo = new Todo()
 
+    todo.fill(data)
+
     if (!!contactId) {
       await todo.associateContact(contactId)
       await todo.load('contact')
@@ -24,15 +26,9 @@ export default class TodosController {
       await todo.load('user')
     }
 
-    todo.title = data.title ?? ''
-    todo.description = data.description ?? ''
-    todo.location = data.location ?? ''
-    todo.date = data.date ?? ''
-    todo.completed = data.completed ?? ''
-
     await todo.save()
-    return todo
 
+    return todo
   }
 
   public async show ({}: HttpContextContract) {

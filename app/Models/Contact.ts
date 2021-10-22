@@ -1,6 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Todo from './Todo'
+import User from './User'
+import { Exception } from '@poppinss/utils'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export default class Contact extends BaseModel {
   @column({ isPrimary: true })
@@ -18,6 +21,9 @@ export default class Contact extends BaseModel {
   @column()
   public email: string
 
+  @column()
+  public userId: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -26,4 +32,17 @@ export default class Contact extends BaseModel {
 
   @hasMany(() => Todo)
   public todos: HasMany<typeof Todo>
+
+  @belongsTo(() => User)
+  public users: BelongsTo<typeof User>
+
+  public async associateUser(userId) {
+    try {
+      const user = await User.findByOrFail('id', userId)
+      return await this.related('user').associate(user)
+    } catch(exception: any) {
+      //throw new Exception('El usuario no existe')
+      throw exception
+    }
+  }
 }
