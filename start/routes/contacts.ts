@@ -35,7 +35,7 @@ Route.get(baseRoute, async ({ auth, request }) => {
     await request.validate(ContactValidator)
     let contactData = request.body()
   
-    return new ContactsController().update(contactData)
+    return new ContactsController().update(auth.user.id, contactData)
 })
   
   

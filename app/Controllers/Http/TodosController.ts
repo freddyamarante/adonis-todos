@@ -34,7 +34,6 @@ export default class TodosController {
     return todo
   }
 
-  public async show({}: HttpContextContract) {}
 
   public async update(userId: number, data: Record<string, any>) {
     const todo = await Todo.findByOrFail('id', data.id)
@@ -70,7 +69,7 @@ export default class TodosController {
     if (userId === todo.userId) {
       return await todo.delete()
     } else {
-      return 'Not allowed'
+      throw new Exception('Not allowed')
     }
   }
 }
