@@ -28,6 +28,14 @@ export default class TodosController {
       .preload('contact')
   }
 
+  public async findByCompleted(userId: number, completed: boolean) {
+    return Todo.query()
+      .where('completed', completed)
+      .where('user_id', userId)
+      .preload('contact')
+      .preload('user')
+  }
+
   public async create(userId: number, data: Record<string, any>) {
     const contactId = data.contactId
     const todo = new Todo()

@@ -7,6 +7,11 @@ const baseRoute = 'todos'
 Route.get(baseRoute, async ({ auth, request }) => {
   await auth.use('api').authenticate()
   let title = request.input('title')
+  let completed = request.input('completed')
+
+  if (completed) {
+    return new TodosController().findByCompleted(auth.user.id, completed)
+  }
 
   if (title) {
     return new TodosController().findByTitle(auth.user.id, title)
