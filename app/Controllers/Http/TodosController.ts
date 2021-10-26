@@ -1,9 +1,24 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { Exception } from '@poppinss/utils'
 import Todo from 'App/Models/Todo'
 
 export default class TodosController {
   public async index(userId) {
     return Todo.query().where('user_id', userId).preload('user').preload('contact')
+  }
+
+  public async show(userId, todoId) {
+    try {
+      const todo = await Todo.query()
+        .where('user_id', userId)
+        .where('id', todoId)
+        .preload('user')
+        .preload('contact')
+        .firstOrFail()
+      return todo
+    } catch (e) {
+      throw new Exception('Esta agenda no existe', 404)
+    }
   }
 
   public async findByTitle(userId: number, title: string) {
@@ -34,11 +49,10 @@ export default class TodosController {
     return todo
   }
 
-
   public async update(userId: number, data: Record<string, any>) {
     const todo = await Todo.findByOrFail('id', data.id)
 
-    if (!!userId) {
+    if (userId) {
       await todo.associateUser(userId)
       await todo.load('user')
     }
