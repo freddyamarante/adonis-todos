@@ -11,6 +11,19 @@ export default class ContactsController {
     return Todo.query().where('name', 'like', `%${name}`).where('user_id', userId).preload('user')
   }
 
+  public async show(userId, contactId) {
+    try {
+      const contact = await Contact.query()
+        .where('user_id', userId)
+        .where('id', contactId)
+        .preload('user')
+        .firstOrFail()
+      return contact
+    } catch (e) {
+      throw new Exception('Este contacto no existe', 404)
+    }
+  }
+
   public async create(userId: number, data: Record<string, any>) {
     const contact = new Contact()
 
@@ -29,7 +42,7 @@ export default class ContactsController {
   public async destroy(userId: number, id: number) {
     const contact = await Contact.findByOrFail('id', id)
 
-    if (userId === contact.userId) { 
+    if (userId === contact.userId) {
       return await contact.delete()
     } else {
       throw new Exception('Not allowed')
@@ -39,7 +52,7 @@ export default class ContactsController {
   public async update(userId: number, data: Record<string, any>) {
     const contact = await Contact.findByOrFail('id', data.id)
 
-    if (!!userId) {
+    if (userId) {
       await contact.associateUser(userId)
       await contact.load('user')
     }

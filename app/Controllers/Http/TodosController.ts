@@ -1,4 +1,3 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { Exception } from '@poppinss/utils'
 import Todo from 'App/Models/Todo'
 
