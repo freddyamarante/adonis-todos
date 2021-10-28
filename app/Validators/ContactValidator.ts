@@ -24,10 +24,7 @@ export default class ContactValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string({}, [
-      rules.minLength(3),
-      rules.unique({ table: 'contacts', column: 'name' }),
-    ]),
+    name: schema.string({}, [rules.minLength(3)]),
     email: schema.string.optional({}, [rules.email()]),
   })
 
