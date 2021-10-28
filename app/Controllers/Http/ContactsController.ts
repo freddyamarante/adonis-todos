@@ -1,26 +1,61 @@
-import Contact from "App/Models/Contact"
-import Todo from "App/Models/Todo"
+import { Exception } from '@poppinss/utils'
+import Contact from 'App/Models/Contact'
+import Todo from 'App/Models/Todo'
 
 export default class ContactsController {
-  public async index() {
-    return Contact.all()
+  public async index(userId: number) {
+    return Contact.query().where('user_id', userId)
   }
 
-  public async findByName(name: string) {
-    return Contact.findBy('name', name)
+  public async findByName(userId: number, name: string) {
+    return Todo.query().where('name', 'like', `%${name}`).where('user_id', userId).preload('user')
   }
 
-  public async create(client: Record<string, any>) {
-    return Contact.create(client)
+  public async show(userId, contactId) {
+    try {
+      const contact = await Contact.query()
+        .where('user_id', userId)
+        .where('id', contactId)
+        .preload('user')
+        .firstOrFail()
+      return contact
+    } catch (e) {
+      throw new Exception('Este contacto no existe', 404)
+    }
   }
 
-  public async destroy (id: number) {
+  public async create(userId: number, data: Record<string, any>) {
+    const contact = new Contact()
+
+    contact.fill(data)
+
+    if (userId) {
+      await contact.associateUser(userId)
+      await contact.load('user')
+    }
+
+    await contact.save()
+
+    return contact
+  }
+
+  public async destroy(userId: number, id: number) {
     const contact = await Contact.findByOrFail('id', id)
-    return await contact.delete()
+
+    if (userId === contact.userId) {
+      return await contact.delete()
+    } else {
+      throw new Exception('Not allowed')
+    }
   }
 
-  public async update (data: Record<string, any>) {
+  public async update(userId: number, data: Record<string, any>) {
     const contact = await Contact.findByOrFail('id', data.id)
+
+    if (userId) {
+      await contact.associateUser(userId)
+      await contact.load('user')
+    }
 
     return await contact.merge(data).save()
   }

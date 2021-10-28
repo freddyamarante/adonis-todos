@@ -1,50 +1,82 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { Exception } from '@poppinss/utils'
 import Todo from 'App/Models/Todo'
 
 export default class TodosController {
-  public async index () {
-    return Todo.query().preload('contact')
+  public async index(userId) {
+    return Todo.query().where('user_id', userId).preload('user').preload('contact')
   }
 
-  public async findByTitle(title: string) {
-    return Todo.query().where('title', 'like', `%${title}%`).preload('contact')
+  public async show(userId, todoId) {
+    try {
+      const todo = await Todo.query()
+        .where('user_id', userId)
+        .where('id', todoId)
+        .preload('user')
+        .preload('contact')
+        .firstOrFail()
+      return todo
+    } catch (e) {
+      throw new Exception('Esta agenda no existe', 404)
+    }
   }
 
-  public async create (data: Record<string, any>) { 
+  public async findByTitle(userId: number, title: string) {
+    return Todo.query()
+      .where('title', 'like', `%${title}%`)
+      .where('user_id', userId)
+      .preload('contact')
+  }
+
+  public async findByCompleted(userId: number, completed: boolean) {
+    return Todo.query()
+      .where('completed', completed)
+      .where('user_id', userId)
+      .preload('contact')
+      .preload('user')
+  }
+
+  public async create(userId: number, data: Record<string, any>) {
     const contactId = data.contactId
     const todo = new Todo()
 
-    if (!!contactId) {
+    await todo.fill(data)
+
+    if (userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
+    }
+
+    if (contactId) {
       await todo.associateContact(contactId)
       await todo.load('contact')
     }
 
-    todo.title = data.title ?? ''
-    todo.description = data.description ?? ''
-    todo.location = data.location ?? ''
-    todo.date = data.date ?? ''
-    todo.completed = data.completed ?? ''
-
     await todo.save()
 
     return todo
-
   }
 
-  public async show ({}: HttpContextContract) {
-  }
-
-  public async update (data: Record<string, any>) {
+  public async update(userId: number, data: Record<string, any>) {
     const todo = await Todo.findByOrFail('id', data.id)
 
-    if (data.contactId !== null) {
+    if (userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
+    }
+
+    if (data.hasOwnProperty('contactId') && !data.contactId) {
       await todo.associateContact(data.contactId)
       delete data.contactId
     }
 
-    if (data.contactId === null) {
+    if (data.contactId) {
       await todo.related('contact').dissociate()
       delete data.contactId
+    }
+
+    if (userId) {
+      await todo.associateUser(userId)
+      await todo.load('user')
     }
 
     await todo.merge(data).save()
@@ -52,11 +84,13 @@ export default class TodosController {
     return todo
   }
 
-  public async destroy (id: number) {
+  public async destroy(userId: number, id: number) {
     const todo = await Todo.findByOrFail('id', id)
-    return await todo.delete()
+
+    if (userId === todo.userId) {
+      return await todo.delete()
+    } else {
+      throw new Exception('Not allowed')
+    }
   }
-
-  
 }
-
