@@ -46,7 +46,8 @@ export default class Todo extends BaseModel {
       const contact = await Contact.findByOrFail('id', contactId)
       await this.related('contact').associate(contact)
     } catch (exception: any) {
-      throw new Exception('El contacto no existe')
+      //throw new Exception('El contacto no existe')
+      throw exception
     }
   }
 
