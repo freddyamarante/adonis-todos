@@ -64,12 +64,12 @@ export default class TodosController {
       await todo.load('user')
     }
 
-    if (data.hasOwnProperty('contactId') && !data.contactId) {
+    if (data.hasOwnProperty('contactId') && data.contactId) {
       await todo.associateContact(data.contactId)
       delete data.contactId
     }
 
-    if (data.contactId) {
+    if (data.hasOwnProperty('contactId') && !data.contactId) {
       await todo.related('contact').dissociate()
       delete data.contactId
     }
