@@ -1,6 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 import UsersController from 'App/Controllers/Http/UsersController'
+import UserValidator from 'App/Validators/UserValidator'
 
 const baseRoute = 'users'
 
@@ -21,6 +22,7 @@ Route.post('login', async ({ auth, request, response }) => {
 
 Route.post(baseRoute, async ({ request }) => {
   let userData = request.body()
+  await request.validate(UserValidator)
   return new UsersController().create(userData)
 })
 
