@@ -31,7 +31,7 @@ Route.get('checklogin', async ({ auth }) => {
   return { user: auth.user }
 })
 
-Route.post('/logout', async ({ auth, response }) => {
+Route.post('/logout', async ({ auth }) => {
   await auth.use('api').revoke()
   return {
     revoked: true,
